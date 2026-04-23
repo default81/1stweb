@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELEGANCE - Modern Fashion E-Commerce</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #f5f5f5;
+            --accent-color: #d4af37;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --success-color: #4caf50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            color: var(--accent-color);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .header-btn:hover {
+            color: var(--accent-color);
+        }
+
+        .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent-color);
+            color: black;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Main Container */
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr 350px;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar - Filters */
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .filter-section {
+            margin-bottom: 2rem;
+        }
+
+        .filter-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-color);
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .filter-option:hover {
+            transform: translateX(5px);
+        }
+
+        .filter-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--accent-color);
+        }
+
+        .filter-option label {
+            margin-left: 0.8rem;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .size-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .size-btn {
+            padding: 0.8rem;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .size-btn:hover,
+        .size-btn.active {
+            border-color: var(--accent-color);
+            background: var(--accent-color);
+            color: white;
+        }
+
+        /* Main Content - Model Viewer */
+        .main-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .model-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .model-viewer {
+            width: 100%;
+            aspect-ratio: 9/16;
+            background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .model-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .model-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .control-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        .rotation-slider {
+            width: 100%;
+            max-width: 300px;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border-color);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .rotation-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .rotation-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .rotation-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s ease;
+        }
+
+        .zoom-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .zoom-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .zoom-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .zoom-level {
+            min-width: 80px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Right Sidebar - Clothing Items */
+        .right-sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-color);
+        }
+
+        .clothing-tabs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            padding: 0.7rem;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover,
+        .tab-btn.active {
+            border-color: var(--accent-color);
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .color-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+        }
+
+        .color-label {
+            display: block;
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 0.3rem;
+            color: #666;
+        }
+
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .item-card {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-card:hover {
+            border-color: var(--accent-color);
+            background: #fafafa;
+            transform: translateX(-5px);
+        }
+
+        .item-card.selected {
+            border-color: var(--accent-color);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .item-name {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .item-price {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-add-cart {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-add-cart:hover {
+            background: var(--accent-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-wishlist {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--primary-color);
+        }
+
+        .btn-wishlist:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .btn-wishlist.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        /* Current Outfit Display */
+        .current-outfit {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .outfit-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+        }
+
+        .outfit-item:last-child {
+            border-bottom: none;
+        }
+
+        .outfit-category {
+            font-weight: 600;
+            color: var(--primary-color);
+            min-width: 80px;
+        }
+
+        .outfit-value {
+            color: #666;
+            flex: 1;
+        }
+
+        .remove-item {
+            background: none;
+            border: none;
+            color: #d32f2f;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .remove-item:hover {
+            transform: scale(1.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 200px 1fr;
+            }
+
+            .right-sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .right-sidebar {
+                display: block;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .main-content,
+        .sidebar,
+        .right-sidebar {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c9a227;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--success-color);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease-out;
+            z-index: 2000;
+        }
+
+        .toast.error {
+            background: #d32f2f;
+        }
+
+        .model-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">✨ ELEGANCE</div>
+        <div class="header-actions">
+            <button class="header-btn" title="Search">
+                🔍
+            </button>
+            <button class="header-btn" id="wishlistBtn" title="Wishlist">
+                ♡
+                <span class="badge" id="wishlistBadge" style="display: none;">0</span>
+            </button>
+            <button class="header-btn" id="cartBtn" title="Shopping Cart">
+                🛍️
+                <span class="badge" id="cartBadge" style="display: none;">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Left Sidebar - Filters -->
+        <div class="sidebar">
+            <div class="filter-section">
+                <div class="filter-title">Gender</div>
+                <div class="filter-option">
+                    <input type="checkbox" id="menFilter" checked>
+                    <label for="menFilter">Men</label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="womenFilter" checked>
+                    <label for="womenFilter">Women</label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="unisexFilter" checked>
+                    <label for="unisexFilter">Unisex</label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Style</div>
+                <div class="filter-option">
+                    <input type="checkbox" id="casualFilter" checked>
+                    <label for="casualFilter">Casual</label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="formalFilter" checked>
+                    <label for="formalFilter">Formal</label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="sportFilter" checked>
+                    <label for="sportFilter">Sports</label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Size</div>
+                <div class="size-grid">
+                    <button class="size-btn" data-size="XS">XS</button>
+                    <button class="size-btn" data-size="S">S</button>
+                    <button class="size-btn" data-size="M" class="active">M</button>
+                    <button class="size-btn" data-size="L">L</button>
+                    <button class="size-btn" data-size="XL">XL</button>
+                    <button class="size-btn" data-size="XXL">XXL</button>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Price Range</div>
+                <input type="range" min="0" max="500" value="500" style="width: 100%;">
+                <div style="text-align: center; margin-top: 0.5rem; color: #666;">$0 - $500</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="model-section">
+                <!-- Model Canvas -->
+                <div class="model-viewer">
+                    <canvas id="modelCanvas" class="model-canvas"></canvas>
+                </div>
+
+                <!-- Model Stats -->
+                <div class="model-stats">
+                    <div class="stat">Rotation: <span id="rotationDisplay">0°</span></div>
+                    <div class="stat">Zoom: <span id="zoomDisplay">100%</span></div>
+                </div>
+
+                <!-- Model Controls -->
+                <div style="width: 100%;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Rotate Model</div>
+                        <input type="range" id="rotationSlider" class="rotation-slider" min="0" max="360" value="0">
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Zoom Controls</div>
+                        <div class="zoom-controls">
+                            <button class="zoom-btn" id="zoomOut">−</button>
+                            <div class="zoom-level" id="zoomLabel">100%</div>
+                            <button class="zoom-btn" id="zoomIn">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View Preset Buttons -->
+                <div class="model-controls">
+                    <button class="control-btn active" data-view="front">Front View</button>
+                    <button class="control-btn" data-view="back">Back View</button>
+                    <button class="control-btn" data-view="left">Left Side</button>
+                    <button class="control-btn" data-view="right">Right Side</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar - Clothing Selection -->
+        <div class="right-sidebar">
+            <div class="sidebar-title">Select Clothing</div>
+
+            <!-- Clothing Tabs -->
+            <div class="clothing-tabs">
+                <button class="tab-btn active" data-category="tops">Tops</button>
+                <button class="tab-btn" data-category="bottoms">Bottoms</button>
+                <button class="tab-btn" data-category="jackets">Jackets</button>
+                <button class="tab-btn" data-category="accessories">Accessories</button>
+            </div>
+
+            <!-- Color Selector -->
+            <div style="margin-bottom: 1.5rem;">
+                <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.8rem; font-weight: 500;">Color</div>
+                <div class="color-selector" id="colorSelector">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="color-option selected" style="background: #ffffff; border: 3px solid #000;" data-color="white"></div>
+                        <span class="color-label">White</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="color-option" style="background: #000000;" data-color="black"></div>
+                        <span class="color-label">Black</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="color-option" style="background: #1a5f7a;" data-color="blue"></div>
+                        <span class="color-label">Navy</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="color-option" style="background: #c41e3a;" data-color="red"></div>
+                        <span class="color-label">Red</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="color-option" style="background: #666666;" data-color="gray"></div>
+                        <span class="color-label">Gray</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Items List -->
+            <div id="itemsList" class="item-list"></div>
+
+            <!-- Current Outfit -->
+            <div class="current-outfit">
+                <div class="sidebar-title" style="margin-bottom: 1rem; font-size: 1rem;">Current Outfit</div>
+                <div id="outfitDisplay"></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn btn-add-cart" id="addToCart">Add to Cart</button>
+                <button class="action-btn btn-wishlist" id="addToWishlist">♡ Wishlist</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data for clothing items
+        const clothingData = {
+            tops: [
+                { id: 1, name: 'Classic T-Shirt', price: 29.99, colors: ['white', 'black', 'blue', 'red', 'gray'], type: 'tshirt' },
+                { id: 2, name: 'Oxford Shirt', price: 59.99, colors: ['white', 'blue', 'red', 'gray'], type: 'shirt' },
+                { id: 3, name: 'Polo Shirt', price: 49.99, colors: ['white', 'black', 'blue', 'red'], type: 'polo' },
+                { id: 4, name: 'Turtleneck', price: 54.99, colors: ['black', 'gray', 'blue'], type: 'turtleneck' },
+                { id: 5, name: 'V-Neck Sweater', price: 69.99, colors: ['black', 'blue', 'gray', 'white'], type: 'sweater' }
+            ],
+            bottoms: [
+                { id: 6, name: 'Classic Jeans', price: 79.99, colors: ['black', 'blue', 'gray'], type: 'jeans' },
+                { id: 7, name: 'Chinos', price: 64.99, colors: ['gray', 'blue', 'black', 'white'], type: 'chinos' },
+                { id: 8, name: 'Cargo Pants', price: 74.99, colors: ['black', 'gray', 'blue'], type: 'cargo' },
+                { id: 9, name: 'Casual Shorts', price: 44.99, colors: ['black', 'blue', 'gray', 'white'], type: 'shorts' },
+                { id: 10, name: 'Formal Trousers', price: 89.99, colors: ['black', 'gray', 'blue'], type: 'formal' }
+            ],
+            jackets: [
+                { id: 11, name: 'Denim Jacket', price: 99.99, colors: ['blue', 'black'], type: 'denim' },
+                { id: 12, name: 'Leather Jacket', price: 199.99, colors: ['black', 'gray'], type: 'leather' },
+                { id: 13, name: 'Blazer', price: 149.99, colors: ['black', 'gray', 'blue'], type: 'blazer' },
+                { id: 14, name: 'Bomber Jacket', price: 119.99, colors: ['black', 'blue', 'gray'], type: 'bomber' },
+                { id: 15, name: 'Windbreaker', price: 89.99, colors: ['blue', 'black', 'gray', 'red'], type: 'windbreaker' }
+            ],
+            accessories: [
+                { id: 16, name: 'Classic Belt', price: 39.99, colors: ['black', 'gray'], type: 'belt' },
+                { id: 17, name: 'Casual Watch', price: 149.99, colors: ['black', 'gray', 'blue'], type: 'watch' },
+                { id: 18, name: 'Sneakers', price: 119.99, colors: ['white', 'black', 'blue', 'red'], type: 'shoes' },
+                { id: 19, name: 'Dress Shoes', price: 129.99, colors: ['black', 'gray'], type: 'shoes' },
+                { id: 20, name: 'Beanie Hat', price: 34.99, colors: ['black', 'gray', 'blue'], type: 'hat' }
+            ]
+        };
+
+        // State Management
+        let currentOutfit = {
+            tops: null,
+            bottoms: null,
+            jackets: null,
+            accessories: null
+        };
+
+        let selectedColor = 'white';
+        let currentCategory = 'tops';
+        let modelRotation = 0;
+        let modelZoom = 1;
+        let currentView = 'front';
+        let cart = [];
+        let wishlist = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderItemsList();
+            setupEventListeners();
+            drawModel();
+        });
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Category Tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentCategory = e.target.dataset.category;
+                    renderItemsList();
+                });
+            });
+
+            // Color Selector
+            document.querySelectorAll('.color-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    selectedColor = opt.dataset.color;
+                    drawModel();
+                });
+            });
+
+            // View Buttons
+            document.querySelectorAll('[data-view]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('[data-view]').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentView = e.target.dataset.view;
+                    const viewAngles = { front: 0, left: -45, back: 180, right: 45 };
+                    modelRotation = viewAngles[currentView];
+                    document.getElementById('rotationSlider').value = modelRotation;
+                    document.getElementById('rotationDisplay').textContent = modelRotation + '°';
+                    drawModel();
+                });
+            });
+
+            // Rotation Slider
+            document.getElementById('rotationSlider').addEventListener('input', (e) => {
+                modelRotation = parseFloat(e.target.value);
+                document.getElementById('rotationDisplay').textContent = Math.round(modelRotation) + '°';
+                currentView = 'custom';
+                document.querySelectorAll('[data-view]').forEach(b => b.classList.remove('active'));
+                drawModel();
+            });
+
+            // Zoom Controls
+            document.getElementById('zoomIn').addEventListener('click', () => {
+                modelZoom = Math.min(modelZoom + 0.1, 2);
+                updateZoomDisplay();
+                drawModel();
+            });
+
+            document.getElementById('zoomOut').addEventListener('click', () => {
+                modelZoom = Math.max(modelZoom - 0.1, 0.5);
+                updateZoomDisplay();
+                drawModel();
+            });
+
+            // Add to Cart
+            document.getElementById('addToCart').addEventListener('click', addToCart);
+
+            // Wishlist
+            document.getElementById('addToWishlist').addEventListener('click', toggleWishlist);
+        }
+
+        // Render Items List
+        function renderItemsList() {
+            const itemsList = document.getElementById('itemsList');
+            itemsList.innerHTML = '';
+            const items = clothingData[currentCategory];
+
+            items.forEach(item => {
+                const itemCard = document.createElement('div');
+                itemCard.className = 'item-card';
+                itemCard.innerHTML = `
+                    <div>
+                        <div class="item-name">${item.name}</div>
+                    </div>
+                    <div class="item-price">$${item.price.toFixed(2)}</div>
+                `;
+                itemCard.addEventListener('click', () => selectItem(item));
+                itemsList.appendChild(itemCard);
+            });
+        }
+
+        // Select Item
+        function selectItem(item) {
+            let category;
+            if (currentCategory === 'tops') {
+                category = 'tops';
+            } else if (currentCategory === 'bottoms') {
+                category = 'bottoms';
+            } else if (currentCategory === 'jackets') {
+                category = 'jackets';
+            } else {
+                category = 'accessories';
+            }
+
+            currentOutfit[category] = {
+                ...item,
+                selectedColor: selectedColor
+            };
+
+            updateOutfitDisplay();
+            drawModel();
+            showToast(`${item.name} added to outfit!`);
+        }
+
+        // Update Outfit Display
+        function updateOutfitDisplay() {
+            const outfitDisplay = document.getElementById('outfitDisplay');
+            outfitDisplay.innerHTML = '';
+
+            Object.entries(currentOutfit).forEach(([category, item]) => {
+                if (item) {
+                    const outfitItem = document.createElement('div');
+                    outfitItem.className = 'outfit-item';
+                    outfitItem.innerHTML = `
+                        <div class="outfit-category">${category.charAt(0).toUpperCase() + category.slice(1)}:</div>
+                        <div class="outfit-value">${item.name} (${item.selectedColor})</div>
+                        <button class="remove-item" onclick="removeFromOutfit('${category}')">✕</button>
+                    `;
+                    outfitDisplay.appendChild(outfitItem);
+                }
+            });
+
+            if (Object.values(currentOutfit).every(item => !item)) {
+                outfitDisplay.innerHTML = '<div style="color: #999;">Select items to build your outfit</div>';
+            }
+        }
+
+        // Remove From Outfit
+        function removeFromOutfit(category) {
+            currentOutfit[category] = null;
+            updateOutfitDisplay();
+            drawModel();
+            showToast('Item removed from outfit');
+        }
+
+        // Add to Cart
+        function addToCart() {
+            const hasItems = Object.values(currentOutfit).some(item => item);
+            if (!hasItems) {
+                showToast('Please select at least one item', true);
+                return;
+            }
+
+            const outfitId = Date.now();
+            const outfit = { id: outfitId, ...currentOutfit };
+            cart.push(outfit);
+            updateCartBadge();
+            showToast('Outfit added to cart!');
+        }
+
+        // Toggle Wishlist
+        function toggleWishlist() {
+            const hasItems = Object.values(currentOutfit).some(item => item);
+            if (!hasItems) {
+                showToast('Please select at least one item', true);
+                return;
+            }
+
+            const btn = document.getElementById('addToWishlist');
+            const outfitId = Date.now();
+            const outfit = { id: outfitId, ...currentOutfit };
+
+            if (btn.classList.contains('active')) {
+                wishlist = wishlist.filter(item => item.id !== outfit.id);
+                btn.classList.remove('active');
+                showToast('Removed from wishlist');
+            } else {
+                wishlist.push(outfit);
+                btn.classList.add('active');
+                showToast('Added to wishlist!');
+            }
+
+            updateWishlistBadge();
+        }
+
+        // Update Badges
+        function updateCartBadge() {
+            const badge = document.getElementById('cartBadge');
+            if (cart.length > 0) {
+                badge.textContent = cart.length;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function updateWishlistBadge() {
+            const badge = document.getElementById('wishlistBadge');
+            if (wishlist.length > 0) {
+                badge.textContent = wishlist.length;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Update Zoom Display
+        function updateZoomDisplay() {
+            document.getElementById('zoomLabel').textContent = Math.round(modelZoom * 100) + '%';
+            document.getElementById('zoomDisplay').textContent = Math.round(modelZoom * 100) + '%';
+        }
+
+        // Draw Model with Canvas
+        function drawModel() {
+            const canvas = document.getElementById('modelCanvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+
+            // Set canvas resolution
+            canvas.width = canvas.offsetWidth * dpr;
+            canvas.height = canvas.offsetHeight * dpr;
+            ctx.scale(dpr, dpr);
+
+            const width = canvas.offsetWidth;
+            const height = canvas.offsetHeight;
+
+            // Clear canvas with gradient background
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0, '#fafafa');
+            gradient.addColorStop(1, '#f0f0f0');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            // Center point
+            const centerX = width / 2;
+            const centerY = height / 2.5;
+
+            // Apply transformations
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate((modelRotation * Math.PI) / 180);
+            ctx.scale(modelZoom, modelZoom);
+
+            drawMannequin(ctx, currentOutfit);
+
+            ctx.restore();
+        }
+
+        // Draw Mannequin with Clothing
+        function drawMannequin(ctx, outfit) {
+            const headY = -60;
+            const torsoY = -20;
+            const legY = 40;
+
+            // Head
+            ctx.fillStyle = '#d4a574';
+            ctx.beginPath();
+            ctx.arc(0, headY, 25, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Neck
+            ctx.fillStyle = '#d4a574';
+            ctx.fillRect(-8, headY + 20, 16, 12);
+
+            // Draw Jacket/Outer Layer
+            if (outfit.jackets) {
+                drawJacket(ctx, outfit.jackets, selectedColor);
+            }
+
+            // Draw Top/Shirt
+            if (outfit.tops) {
+                drawTop(ctx, outfit.tops, selectedColor);
+            }
+
+            // Draw Bottom/Pants
+            if (outfit.bottoms) {
+                drawBottom(ctx, outfit.bottoms, selectedColor);
+            }
+
+            // Draw Accessories
+            if (outfit.accessories) {
+                drawAccessories(ctx, outfit.accessories, selectedColor);
+            }
+
+            // Body outline
+            if (!outfit.tops && !outfit.jackets) {
+                ctx.strokeStyle = '#ccc';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.ellipse(0, torsoY, 20, 35, 0, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // Legs outline
+            if (!outfit.bottoms) {
+                ctx.strokeStyle = '#ccc';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(-8, torsoY + 35);
+                ctx.lineTo(-8, legY + 50);
+                ctx.moveTo(8, torsoY + 35);
+                ctx.lineTo(8, legY + 50);
+                ctx.stroke();
+            }
+        }
+
+        // Draw Top
+        function drawTop(ctx, item, color) {
+            const colorMap = {
+                white: '#ffffff',
+                black: '#1a1a1a',
+                blue: '#1a5f7a',
+                red: '#c41e3a',
+                gray: '#666666'
+            };
+
+            ctx.fillStyle = colorMap[color] || '#ffffff';
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 1.5;
+
+            // T-shirt shape
+            ctx.beginPath();
+            ctx.moveTo(-25, -35);
+            ctx.lineTo(-35, -20);
+            ctx.lineTo(-35, 20);
+            ctx.lineTo(35, 20);
+            ctx.lineTo(35, -20);
+            ctx.lineTo(25, -35);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Sleeves for shirts
+            if (item.type === 'shirt' || item.type === 'polo') {
+                ctx.beginPath();
+                ctx.moveTo(-25, -30);
+                ctx.lineTo(-50, -20);
+                ctx.lineTo(-50, 10);
+                ctx.lineTo(-35, 10);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(25, -30);
+                ctx.lineTo(50, -20);
+                ctx.lineTo(50, 10);
+                ctx.lineTo(35, 10);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            // Collar
+            if (item.type === 'turtleneck') {
+                ctx.fillStyle = colorMap[color];
+                ctx.beginPath();
+                ctx.arc(0, -35, 10, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Draw Bottom
+        function drawBottom(ctx, item, color) {
+            const colorMap = {
+                white: '#ffffff',
+                black: '#1a1a1a',
+                blue: '#1a5f7a',
+                red: '#c41e3a',
+                gray: '#666666'
+            };
+
+            ctx.fillStyle = colorMap[color] || '#1a1a1a';
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 1.5;
+
+            // Pants legs
+            ctx.beginPath();
+            ctx.moveTo(-10, 20);
+            ctx.lineTo(-12, 80);
+            ctx.lineTo(-8, 80);
+            ctx.lineTo(-6, 20);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(10, 20);
+            ctx.lineTo(12, 80);
+            ctx.lineTo(8, 80);
+            ctx.lineTo(6, 20);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Shorts variant
+            if (item.type === 'shorts') {
+                ctx.beginPath();
+                ctx.moveTo(-10, 20);
+                ctx.lineTo(-12, 50);
+                ctx.lineTo(-8, 50);
+                ctx.lineTo(-6, 20);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(10, 20);
+                ctx.lineTo(12, 50);
+                ctx.lineTo(8, 50);
+                ctx.lineTo(6, 20);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+        }
+
+        // Draw Jacket
+        function drawJacket(ctx, item, color) {
+            const colorMap = {
+                white: '#ffffff',
+                black: '#1a1a1a',
+                blue: '#1a5f7a',
+                red: '#c41e3a',
+                gray: '#666666'
+            };
+
+            ctx.fillStyle = colorMap[color] || '#1a1a1a';
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 2;
+
+            // Jacket outline
+            ctx.beginPath();
+            ctx.moveTo(-28, -35);
+            ctx.lineTo(-45, -15);
+            ctx.lineTo(-45, 50);
+            ctx.lineTo(45, 50);
+            ctx.lineTo(45, -15);
+            ctx.lineTo(28, -35);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Zipper
+            ctx.strokeStyle = '#888';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([3, 3]);
+            ctx.beginPath();
+            ctx.moveTo(0, -30);
+            ctx.lineTo(0, 45);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        // Draw Accessories
+        function drawAccessories(ctx, item, color) {
+            const colorMap = {
+                white: '#ffffff',
+                black: '#1a1a1a',
+                blue: '#1a5f7a',
+                red: '#c41e3a',
+                gray: '#666666'
+            };
+
+            ctx.fillStyle = colorMap[color] || '#888';
+
+            if (item.type === 'hat') {
+                ctx.beginPath();
+                ctx.ellipse(0, -85, 28, 8, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(-28, -85);
+                ctx.lineTo(-25, -105);
+                ctx.lineTo(25, -105);
+                ctx.lineTo(28, -85);
+                ctx.closePath();
+                ctx.fill();
+            } else if (item.type === 'belt') {
+                ctx.fillRect(-35, 18, 70, 6);
+            } else if (item.type === 'shoes') {
+                ctx.fillStyle = colorMap[color];
+                ctx.beginPath();
+                ctx.ellipse(-8, 82, 8, 5, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(8, 82, 8, 5, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Show Toast Notification
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = 'toast' + (isError ? ' error' : '');
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
